@@ -70,7 +70,7 @@
 
 ![answer1](https://github.com/Vasiliy-Ser/storage_in_K8s_21.5/blob/893927322d503993d4490429aad85be0ea6eb633/png/1.png)  
 ![answer2](https://github.com/Vasiliy-Ser/storage_in_K8s_21.5/blob/893927322d503993d4490429aad85be0ea6eb633/png/2.png)  
-![answer3](https://gith ub.com/Vasiliy-Ser/storage_in_K8s_21.5/blob/893927322d503993d4490429aad85be0ea6eb633/png/3.png)   
+![answer3](https://github.com/Vasiliy-Ser/storage_in_K8s_21.5/blob/893927322d503993d4490429aad85be0ea6eb633/png/3.png)   
 ![answer4](https://github.com/Vasiliy-Ser/storage_in_K8s_21.5/blob/893927322d503993d4490429aad85be0ea6eb633/png/4.png)  
 
 
