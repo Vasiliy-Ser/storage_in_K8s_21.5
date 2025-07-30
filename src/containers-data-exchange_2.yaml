@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-local-volume
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: local-volume
+  template:
+    metadata:
+      labels:
+        app: local-volume
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: develop-webs-0
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["/bin/sh", "-c"]
+          args:
+            - while true; do echo "$(date) - Hello from busybox" >> /shared/data.txt; sleep 5; done
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared
+        - name: multitool
+          image: praqma/network-multitool
+          command: ["/bin/sh", "-c"]
+          args:
+            - tail -f /shared/data.txt
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: local-pvc

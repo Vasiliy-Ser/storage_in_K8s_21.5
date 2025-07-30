@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tmp/data-pv
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - develop-webs-0
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-local-volume
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: local-volume
+  template:
+    metadata:
+      labels:
+        app: local-volume
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: develop-webs-0
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["/bin/sh", "-c"]
+          args:
+            - while true; do echo "$(date) - Hello from busybox" >> /shared/data.txt; sleep 5; done
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared
+        - name: multitool
+          image: praqma/network-multitool
+          command: ["/bin/sh", "-c"]
+          args:
+            - tail -f /shared/data.txt
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: local-pvc
